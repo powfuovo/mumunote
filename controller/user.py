@@ -4,7 +4,7 @@ from model.user import User
 
 user = Blueprint('user', __name__)
 
-@user.route('/')
+@user.route('/user')
 def get_one():
     user = User()
     result = user.get_one()
