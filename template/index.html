@@ -2,10 +2,18 @@
 {% block content %}
 <!--      按需引入-->
         {% include 'public/sub-header.html' %}
+	<script>
+		<!--  使得py中定义的变量在js文件中也可以使用	-->
+		window.startNum = JSON.parse('{{ start_num | tojson | safe }}');
+		window.endNum = JSON.parse('{{ end_num | tojson | safe }}');
+		console.log("当前 startNum:", window.startNum, "endNum:", window.endNum);
+	</script>
 			<div class="article-container clearfix">
 				<div class="left-menu fl">
 					<div class="selected">
             <a href="">推荐</a>
+            <a href="">{{start_num}}</a>
+            <a href="">{{end_num}}</a>
           </div>
 					<div><a href="">自动化测试</a></div>
 					<div><a href="">Python开发</a></div>
@@ -36,29 +44,12 @@
 							</div>
             </div>
             {% endfor %}
-						<!-- <div class="article-row clearfix">
-							<div class="article-header-image fl">
-								<img src="images/article-header.jpg" alt="">
-							</div>
-							<div class="article-desc fl">
-								<div class="article-name">
-									<a href="" target="_blank">研发技术分享</a>
-								</div>
-								<div class="article-info clearfix">
-									<article class="article-left fl">
-										<span>资讯</span>
-										<span class="iconfont">19254</span>
-										<span>慕课网官方</span>
-										<span>资讯</span>
-									</article>
-									<div class="article-right fr">08.09</div>
-								</div>
-							</div>
-						</div> -->
-
+			<div class = "load-more">下滑加载更多内容</div>
 					</div>
 				</div>
 			</div>
 	</body>
+
+	<script type="text/javascript" src="/js/index.js"></script>
 </html>
 {% endblock %}
