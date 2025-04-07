@@ -1,5 +1,10 @@
-from flask import Blueprint, make_response, session
+# -*- coding: utf-8 -*-
+import re
 
+from flask import Blueprint, make_response, session, request
+
+from common import response_message
+from common.email_utils import gen_email_code, send_email
 from common.utils import ImageCode
 
 # from model.user import User
@@ -15,17 +20,37 @@ user = Blueprint('user', __name__)
 
 @user.route('/vcode')
 def vcode():
-    # µ÷ÓÃ ImageCode ÀàµÄ get_code ·½·¨£¬»ñÈ¡ÑéÖ¤ÂëÎÄ±¾ºÍÍ¼Ïñ¶ş½øÖÆÊı¾İ
+    # è°ƒç”¨ ImageCode ç±»çš„ get_code æ–¹æ³•ï¼Œè·å–éªŒè¯ç æ–‡æœ¬å’Œå›¾åƒäºŒè¿›åˆ¶æ•°æ®
     code,bstring = ImageCode().get_code()
 
-    # ½«Í¼Ïñ¶ş½øÖÆÊı¾İ°ü×°³É Flask ÏìÓ¦¶ÔÏó
+    # å°†å›¾åƒäºŒè¿›åˆ¶æ•°æ®åŒ…è£…æˆ Flask å“åº”å¯¹è±¡
     response = make_response(bstring)
 
-    # ÉèÖÃÏìÓ¦Í·£¬¸æËßä¯ÀÀÆ÷ÕâÊÇ JPEG Í¼Æ¬
+    # è®¾ç½®å“åº”å¤´ï¼Œå‘Šè¯‰æµè§ˆå™¨è¿™æ˜¯ JPEG å›¾ç‰‡
     response.headers['Content-Type'] = 'image/jpeg'
 
-    # ½«ÑéÖ¤ÂëÎÄ±¾×ªÎªĞ¡Ğ´ºó´æÈë session£¨ÓÃÓÚºóĞøÑéÖ¤£©
+    # å°†éªŒè¯ç æ–‡æœ¬è½¬ä¸ºå°å†™åå­˜å…¥ sessionï¼ˆç”¨äºåç»­éªŒè¯ï¼‰
     session['vcode'] = code.lower()
 
-    # ·µ»Ø°üº¬ÑéÖ¤ÂëÍ¼Æ¬µÄÏìÓ¦
+    # è¿”å›åŒ…å«éªŒè¯ç å›¾ç‰‡çš„å“åº”
     return response
+
+
+@user.route('/ecode',methods=['POST'])
+def email_code():
+    email = request.form.get('email')
+    # ç®€å•çš„é‚®ç®±æ ¼å¼éªŒè¯
+    if not re.match(r'^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}$',email):
+        return response_message.UserMessage.other("Invalid email")
+    # ç”Ÿæˆé‚®ç®±éªŒè¯ç çš„éšæœºå­—ç¬¦ä¸²
+    code = gen_email_code()
+
+    # å‘é€é‚®ä»¶
+    try:
+        send_email(email,code)
+        session['ecode'] = code.lower()
+        return response_message.UserMessage.success("é‚®ä»¶å‘é€æˆåŠŸ")
+    except Exception as e:
+        print(e)
+        return response_message.UserMessage.error("é‚®ä»¶å‘é€å¤±è´¥")
+
