@@ -4,15 +4,11 @@
         {% include 'public/sub-header.html' %}
 			<div class="article-container clearfix">
 				<div class="left-menu fl">
-					<div class="selected">
-            <a href="">推荐</a>
-            <a href="">{{start_num}}</a>
-            <a href="">{{end_num}}</a>
-          </div>
-					<div><a href="">自动化测试</a></div>
-					<div><a href="">Python开发</a></div>
-					<div><a href="">Java开发</a></div>
-					<div><a href="">功能测试</a></div>
+					{% for label_name,label_value in label_types.items() %}
+					<div class="{{label_value.selected}}">
+						<a href="?page=1&article_type={{label_name}}">{{label_value.name}}</a>
+					</div>
+					{% endfor %}
 				</div>
 				<div class="article-warpper fl">
 					<div class="article-inner">
