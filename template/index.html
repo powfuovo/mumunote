@@ -2,12 +2,6 @@
 {% block content %}
 <!--      按需引入-->
         {% include 'public/sub-header.html' %}
-	<script>
-		<!--  使得py中定义的变量在js文件中也可以使用	-->
-		window.startNum = JSON.parse('{{ start_num | tojson | safe }}');
-		window.endNum = JSON.parse('{{ end_num | tojson | safe }}');
-		console.log("当前 startNum:", window.startNum, "endNum:", window.endNum);
-	</script>
 			<div class="article-container clearfix">
 				<div class="left-menu fl">
 					<div class="selected">
@@ -49,7 +43,17 @@
 				</div>
 			</div>
 	</body>
-
+	<script>
+		<!--  使得py中定义的变量在js文件中也可以使用	-->
+		window.startNum = JSON.parse('{{ start_num | tojson | safe }}');
+		window.endNum = JSON.parse('{{ end_num | tojson | safe }}');
+		console.log("当前 startNum:", window.startNum, "endNum:", window.endNum);
+	</script>
 	<script type="text/javascript" src="/js/index.js"></script>
+	<script>
+		if(location.search.includes("scroll")){
+			window.scrollTo(0,document.body.scrollHeight-1000);
+		}
+	</script>
 </html>
 {% endblock %}

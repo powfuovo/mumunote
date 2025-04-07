@@ -43,7 +43,7 @@ def home():
         article.label = label_types.get(article.label_name).get("name")
 
         # 日期的显示
-        article.create_time = str(article.create_time.month) + '.' + str(article.create_time.day)
+        article.create_time = str((article.create_time.year)%100) + '.' + str(article.create_time.month) + '.' + str(article.create_time.day)
 
         # 图片路径的处理  "/images/article/header/"
         article.article_image = config[env].article_header_image_path + str(article.article_image)
