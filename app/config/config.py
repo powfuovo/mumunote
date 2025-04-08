@@ -6,8 +6,12 @@ class Config(object):
     # 配置一下文章图片的存储路径
     article_header_image_path = "/images/article/header/"
 
+    # 发送邮箱配置
     email_name = "powfuovoo@163.com"
     email_passwd = "MVnABhHUwffn8TLU"
+
+    # 配置头像存储路径
+    user_header_image_path = "/images/headers/"
 
 # 测试环境
 class TestConfig(Config):
