@@ -11,13 +11,6 @@ from common.utils import ImageCode
 
 user = Blueprint('user', __name__)
 
-# @user.route('/user')
-# def get_one():
-#     user = User()
-#     result = user.get_one()
-#     print (result.__dict__)
-#     return "ok"
-
 @user.route('/vcode')
 def vcode():
     # 调用 ImageCode 类的 get_code 方法，获取验证码文本和图像二进制数据
@@ -40,7 +33,7 @@ def vcode():
 def email_code():
     email = request.form.get('email')
     # 简单的邮箱格式验证
-    if not re.match(r'^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}$',email):
+    if not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
         return response_message.UserMessage.other("Invalid email")
     # 生成邮箱验证码的随机字符串
     code = gen_email_code()
