@@ -46,3 +46,7 @@ class Article(Base):
             Article.browse_num.desc()
         ).limit(count).all()
         return result
+
+    # 获取文章详情
+    def get_article_detail(self, article_id):
+        return db_session.query(Article).filter_by(id=article_id).first()

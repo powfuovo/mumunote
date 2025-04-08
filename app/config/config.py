@@ -1,6 +1,6 @@
 # 全局通用配置
 class Config(object):
-    db_url = "mysql+pymysql://admin1:123@192.168.73.45:3306/mumunote"
+    db_url = "mysql+pymysql://admin1:123@192.168.1.100:3306/mumunote"
     # 前端页面显示的条数
     page_count = 10
     # 配置一下文章图片的存储路径
