@@ -113,12 +113,12 @@
 							<input type="password" class="form-control" id="reg-password1" placeholder="请再次输入您的密码">
 					  </div>
 					  <div class="mb-3">
-					  	  <input type="text" class="auth-code" id="email-vcode" placeholder="请输入验证码">
+					  	  <input type="text" class="auth-code" id="email-ecode" placeholder="请输入验证码">
 							<!--			此处添加type="button"	 以阻止表单默认提交和刷新行为		  -->
 						  <button type="button" class="send" id="send-email-ecode" onclick="sendEmailECode()">发送</button>
 					  </div>
 
-					  <button type="button" class="btn btn-primary login-button">注册</button>
+					  <button type="button" class="btn btn-primary login-button" onclick="userReg()">注册</button>
 			        </form>
 			      </div>
 			      <div class="modal-footer">
