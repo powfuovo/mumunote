@@ -3,7 +3,7 @@ import hashlib
 import json
 import re
 
-from flask import Blueprint, make_response, session, request
+from flask import Blueprint, make_response, session, request, url_for
 
 from app.config.config import config
 from app.settings import env
@@ -110,3 +110,16 @@ def login():
     else:
         return response_message.UserMessage.error("用户名或密码错误")
 
+# 注销功能实现
+@user.route('/logout')
+def logout():
+    # 清空session
+    session.clear()
+    # 这个response到时候直接返回给浏览器 浏览器根据设置响应
+    response = make_response("注销并重定向", 302)
+    # 这里的url_for写的不是url地址 而是对应的router名
+    # 写控制器的模块名称.函数名称，然后映射到这个控制器处理函数的地址上
+    response.headers['Location'] = url_for("index.home")
+    # 清空cookie
+    response.delete_cookie("username")
+    return response
