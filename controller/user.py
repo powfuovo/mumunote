@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import hashlib
+import json
 import re
 
 from flask import Blueprint, make_response, session, request
@@ -6,6 +8,7 @@ from flask import Blueprint, make_response, session, request
 from common import response_message
 from common.email_utils import gen_email_code, send_email
 from common.utils import ImageCode
+from model.user import User
 
 # from model.user import User
 
@@ -46,4 +49,34 @@ def email_code():
     except Exception as e:
         print(e)
         return response_message.UserMessage.error("邮件发送失败")
+
+@user.route('/reg',methods=['POST'])
+def register():
+    request_data = json.loads(request.data)
+    username = request_data['username']
+    password = request_data['password']
+    second_password = request_data['second_password']
+    ecode = request_data['ecode']
+    # 做数据的验证
+    if ecode.lower() != session.get("ecode"):
+        return response_message.UserMessage.error("邮箱验证码错误")
+    # 用户名 和 密码的验证
+    if not re.match(".+@.+\..+", username):
+        return response_message.UserMessage.other("无效的邮箱")
+
+    if len(password) < 6:
+        return response_message.UserMessage.error("密码不合法")
+
+    if password != second_password:
+        return response_message.UserMessage.error("两次密码不一致")
+
+    # 用户名是否已经被注册
+    user = User()
+    if len(user.find_by_username(username)) > 0:
+        return response_message.UserMessage.error("用户名已存在")
+
+    # 实现注册功能
+    password = hashlib.md5(password.encode()).hexdigest()
+    result = user.do_register(username, password)
+    return response_message.UserMessage.success("用户注册成功！")
 
