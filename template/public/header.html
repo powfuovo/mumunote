@@ -44,7 +44,7 @@
 					<span class="login">
 						{% if session.get('is_login') == 'true' %}
 
-						<a href="/personal">欢迎{{session.get('nickname')}}</a>
+						<a href="/personal">{{session.get('nickname')}}，欢迎</a>
 						<a href="/personal"><img src="{{session.get('picture')}}" alt=""></a>
 						<a href="/logout">注销</a>
 						{% else %}
