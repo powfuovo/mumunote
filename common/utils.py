@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 import random
 import string
 from io import BytesIO
@@ -59,5 +60,14 @@ class ImageCode():
 
         return code,image_b_string
 
-ic = ImageCode()
-ic.draw_verify_code()
+# ic = ImageCode()
+# ic.draw_verify_code()
+
+def model_to_json(result):
+    dict = {}
+    for k,v in result.__dict__.items():
+        if not k.startswith("_sa_"):
+            if isinstance(v, datetime):
+                v = v.strftime("%Y-%m-%d %H:%M:%S")
+            dict[k] = v
+    return dict

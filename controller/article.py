@@ -8,6 +8,7 @@ from app.settings import env
 
 from model.article import Article
 from model.favorite import Favorite
+from model.feedback import Feedback
 from model.user import User
 
 article = Blueprint("article",__name__)
@@ -26,10 +27,8 @@ def article_detail():
     user_info = user.find_by_user_id(article_content.user_id)
 
     # @todo 待办 补充获取文章的评论信息
+    feedback_data_list = Feedback().get_feedback_user_list(article_id)
 
-    # @todo 待办 补充获取文章的点赞信息
-
-    # @todo 待办 "我"是否收藏
     is_favorite = 1
 
     if session.get("is_login") == "true":
@@ -45,4 +44,5 @@ def article_detail():
                            user_info=user_info,
                            is_favorite=is_favorite,
                            article_tag_list=article_tag_list,
-                           about_article=about_article)
+                           about_article=about_article,
+                           feedback_data_list=feedback_data_list)
