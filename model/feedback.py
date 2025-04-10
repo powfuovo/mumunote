@@ -58,10 +58,18 @@ class Feedback(Base):
         ).all()
         return result
 
-    def find_reply_by_id(selfself, reply_id):
+    def find_reply_by_id(self, reply_id):
         result = db_session.query(Feedback).filter_by(
             reply_id=id,
         ).order_by(
             Feedback.id.desc()
         ).all()
+        return result
+
+    def get_article_feedback_count(self,article_id):
+        result = db_session.query(Feedback).filter_by(
+            article_id=article_id,
+            reply_id=0,
+            base_reply_id=0
+        ).count()
         return result

@@ -26,10 +26,12 @@ def article_detail():
     user = User()
     user_info = user.find_by_user_id(article_content.user_id)
 
-    # @todo 待办 补充获取文章的评论信息
     feedback_data_list = Feedback().get_feedback_user_list(article_id)
-
+    # 收藏初始化
     is_favorite = 1
+    # 查询评论数量
+    feedback_count = Feedback().get_article_feedback_count(article_id)
+
 
     if session.get("is_login") == "true":
         user_id = session.get("user_id")
@@ -45,4 +47,5 @@ def article_detail():
                            is_favorite=is_favorite,
                            article_tag_list=article_tag_list,
                            about_article=about_article,
-                           feedback_data_list=feedback_data_list)
+                           feedback_data_list=feedback_data_list,
+                           feedback_count=feedback_count)
