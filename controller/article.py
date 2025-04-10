@@ -2,10 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 import logging
 
 from werkzeug.debug import console
-
 from app.config.config import config
 from app.settings import env
-
 from model.article import Article
 from model.favorite import Favorite
 from model.feedback import Feedback
