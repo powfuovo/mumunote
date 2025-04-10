@@ -10,8 +10,8 @@ def db_connect():
     config_class = config[env]
     print(config_class)
     engine = create_engine(config_class.db_url, echo=config_class.if_echo,pool_size=10, max_overflow=30)
-    # 打开数据库的连接会话
-    session = sessionmaker(engine)
+    # 打开数据库的连接会话 关闭查询刷新
+    session = sessionmaker(engine,autocommit=False)
     # 保证线程安全
     db_session = scoped_session(session)
     # 获取基类

@@ -16,7 +16,11 @@ from model.feedback import Feedback
 from model.user import User
 
 feedback = Blueprint("feedback", __name__)
-
+# 拦截器添加
+@feedback.before_request
+def before_request():
+    if session.get("is_login") is None or session.get("is_login") != "true":
+        return {"status": 9999,"data":"您好，请登录"}
 
 @feedback.route("/feedback", methods=["GET", "POST"])
 def ueditor():
