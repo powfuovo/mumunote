@@ -1,3 +1,4 @@
+import json
 import time
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, make_response, jsonify
@@ -7,13 +8,15 @@ from werkzeug.debug import console
 from app.config.config import config
 from app.config.ue_config import FEEDBACK_UECONFIG
 from app.settings import env
-from common.utils import compress_image
+from common import response_message
+from common.utils import compress_image, model_to_json
 from model.article import Article
 from model.favorite import Favorite
 from model.feedback import Feedback
 from model.user import User
 
-feedback = Blueprint("feedback",__name__)
+feedback = Blueprint("feedback", __name__)
+
 
 @feedback.route("/feedback", methods=["GET", "POST"])
 def ueditor():
@@ -40,3 +43,31 @@ def ueditor():
         result["original"] = filename
         return jsonify(result)
 
+
+# 添加一个评论
+@feedback.route("/feedback/add", methods=["post"])
+def feedback_add():
+    request_data = json.loads(request.data)
+    article_id = request_data.get("article_id")
+    # 去除两端空格
+    content = request_data.get("content").strip()
+    ipaddr = request.remote_addr
+    user_id = session.get("user_id")
+
+    # 对内容进行校验
+    if len(content) < 5 or len(content) > 1000:
+        return response_message.FeedbackMessage.other("内容长度不符")
+
+    feedback = Feedback()
+    try:
+        result = feedback.insert_comment(
+            user_id=user_id,
+            article_id=article_id,
+            content=content,
+            ipaddr=ipaddr)
+        result = model_to_json(result)
+        print('————————————————————————————————————————', result)
+        return response_message.FeedbackMessage.success("评论成功")
+    except Exception as e:
+        print(e)
+        return response_message.FeedbackMessage.error("评论失败")
