@@ -107,16 +107,13 @@
 										<span class="iconfont">&#xe6b5;</span>
 										<div class="article-label-list" style="display: none;">
 											<div>
-												{% for label_name,label_value in label_types.items() %}
-												<li data-label-type="{{label_name}}" class="{{label_value.selected}}" onclick="selectLabelName('{{label_name}}','{{label_value.name}}')">{{label_value.name}}</li>
-												{% endfor %}
-																<!-- 								<li class="article-label-selected">请选择需要投递的栏目</li>
+												<li class="article-label-selected">请选择需要投递的栏目</li>
 												<li>Python</li>
 												<li>Java</li>
 												<li>功能测试</li>
 												<li>性能测试</li>
 												<li>自动化测试</li>
-												<li>幽默段子</li> -->
+												<li>幽默段子</li>
 											</div>
 
 										</div>
@@ -129,13 +126,10 @@
 										<span class="iconfont">&#xe6b5;</span>
 										<div class="article-type-list" style="display: none;">
 											<div>
-												{% for article_type_name,article_type_value in article_types.items() %}
-												<li data-article-type="{{article_type_name}}" class="{{article_type_value.selected}}" onclick="selectArticleType('{{article_type_name}}','{{article_type_value.name}}')">{{article_type_value.name}}</li>
-												{% endfor %}
-												<!-- <li class="article-type-selected">请选择</li>
+												<li class="article-type-selected">请选择</li>
 												<li>首发</li>
 												<li>原创</li>
-												<li>其它</li> -->
+												<li>其它</li>
 											</div>
 										
 										</div>

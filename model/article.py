@@ -62,3 +62,34 @@ class Article(Base):
             label_name=label_name).order_by(
             Article.browse_num.desc()
         ).limit(5))
+
+    # 创建文章以及草稿
+    def insert_article(self,user_id, title, article_content,drafted):
+        article = Article(
+            user_id=user_id,
+            title=title,
+            article_content=article_content,
+            drafted=drafted
+        )
+        db_session.add(article)
+        db_session.commit()
+        return article.id
+
+    def update_article(self,
+                      article_id,
+                      title,
+                      article_content,
+                      drafted,
+                      label_name="",
+                      article_tag="",
+                      article_type=""
+                      ):
+      row = db_session.query(Article).filter_by(id=article_id).first()
+      row.title=title
+      row.article_content = article_content,
+      row.drafted = drafted,
+      row.label_name = label_name,
+      row.article_tag = article_tag,
+      row.article_type = article_type
+      db_session.commit()
+      return article_id

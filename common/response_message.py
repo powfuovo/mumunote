@@ -25,6 +25,7 @@ class ArticleMessage():
     @staticmethod
     def success(data):
         return {"status": 2000, "data": data}
+
     @staticmethod
     def save_success(article_id,data):
         return {"status": 2003, "article_id": article_id, "data":data}
