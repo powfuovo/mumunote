@@ -65,7 +65,7 @@ def get_article_request_param(request_data):
 
 @article.route("/article/new")
 def article_new():
-    return render_template("new-article.html",label_types=label_types,article_types=article_types)
+    return render_template("new-article.html",label_types=label_types,article_types=article_types,article_tags=article_tags)
 
 
 # 草稿或文章存储
