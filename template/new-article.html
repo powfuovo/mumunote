@@ -155,9 +155,6 @@
 									</div>
 									<input class="fl" type="text" placeholder="选择下列标签">
 								</div>
-								<script>
-									window.globalArticleTags= {{article_tags | safe}}
-								</script>
 								<div class="article-tag-list">
 									{% for article_tag in article_tags %}
 										<span onclick="addTag('{{article_tag}}')">{{article_tag}}</span>

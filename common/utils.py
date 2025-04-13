@@ -85,7 +85,7 @@ def compress_image(source, dest, width=1200):
         ys = int(y * width / x)
         xs = width
         # 调整图片大小
-        temp = im.resize((xs, ys), Image.ANTIALIAS)
+        temp = im.resize((xs, ys), Image.LANCZOS)
         temp.save(dest, quality=80)
     else:
         im.save(dest, quality=80)

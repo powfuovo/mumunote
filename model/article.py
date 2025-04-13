@@ -93,3 +93,9 @@ class Article(Base):
       row.article_type = article_type
       db_session.commit()
       return article_id
+
+    def update_article_header_image(self,article_id,image_url):
+        row = db_session.query(Article).filter_by(id=article_id).first()
+        row.article_image = image_url
+        db_session.commit()
+        return article_id
