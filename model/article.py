@@ -1,13 +1,17 @@
-from sqlalchemy import Table, or_
+from sqlalchemy import Table, or_, distinct
 from common.database import db_connect
 from app.config.config import config
 from app.settings import env
+from model.favorite import Favorite
+from model.feedback import Feedback
 from model.user import User
 
 db_session, Base, engine = db_connect()
 
+
 class Article(Base):
     __table__ = Table("article", Base.metadata, autoload_with=engine)
+
     # 查询出所有文章，但是不要草稿
     def find_article(self, page, article_type="recommend"):
         #  一页显示多少内容呢, 我们默认为一个10, page默认应该是从1开始
@@ -39,9 +43,9 @@ class Article(Base):
             page = 1
         count = int(page) * config[env].page_count
         result = db_session.query(Article, User.nickname).join(
-            User,User.user_id==Article.user_id).filter(
+            User, User.user_id == Article.user_id).filter(
             or_(Article.title.like('%{}%'.format(keyword)),
-                Article.article_content.like('%{}%'.format(keyword)),)
+                Article.article_content.like('%{}%'.format(keyword)), )
         ).order_by(
             Article.browse_num.desc()
         ).limit(count).all()
@@ -55,7 +59,6 @@ class Article(Base):
         db_session.commit()
         return db_session.query(Article).filter_by(id=article_id).first()
 
-
     # 获取相关文章的数据
     def find_about_article(self, label_name):
         return (db_session.query(Article).filter_by(
@@ -64,7 +67,7 @@ class Article(Base):
         ).limit(5))
 
     # 创建文章以及草稿
-    def insert_article(self,user_id, title, article_content,drafted):
+    def insert_article(self, user_id, title, article_content, drafted):
         article = Article(
             user_id=user_id,
             title=title,
@@ -76,26 +79,81 @@ class Article(Base):
         return article.id
 
     def update_article(self,
-                      article_id,
-                      title,
-                      article_content,
-                      drafted,
-                      label_name="",
-                      article_tag="",
-                      article_type=""
-                      ):
-      row = db_session.query(Article).filter_by(id=article_id).first()
-      row.title=title
-      row.article_content = article_content,
-      row.drafted = drafted,
-      row.label_name = label_name,
-      row.article_tag = article_tag,
-      row.article_type = article_type
-      db_session.commit()
-      return article_id
+                       article_id,
+                       title,
+                       article_content,
+                       drafted,
+                       label_name="",
+                       article_tag="",
+                       article_type=""
+                       ):
+        row = db_session.query(Article).filter_by(id=article_id).first()
+        row.title = title
+        row.article_content = article_content,
+        row.drafted = drafted,
+        row.label_name = label_name,
+        row.article_tag = article_tag,
+        row.article_type = article_type
+        db_session.commit()
+        return article_id
 
-    def update_article_header_image(self,article_id,image_url):
+    def update_article_header_image(self, article_id, image_url):
         row = db_session.query(Article).filter_by(id=article_id).first()
         row.article_image = image_url
         db_session.commit()
         return article_id
+
+    # 获取所有我的草稿
+    def get_all_article_drafted(self, user_id):
+        result = db_session.query(Article).filter_by(
+            drafted=0, user_id=user_id).all()
+        return result
+
+    # 获取某一篇草稿的详情
+    def get_one_article_drafted(self, article_id):
+        result = db_session.query(Article).filter_by(
+            id=article_id, drafted=0).first()
+        return result
+
+ # 获取某一个用户所有的不是草稿的文章
+    def get_article_by_user_id(self, user_id):
+      result = db_session.query(Article).filter_by(
+        user_id=user_id,
+        drafted=1
+      ).all()
+
+      return self.app_path(result)
+
+    # 获取某个用户所有的收藏的文章
+    def get_favorite_article_by_user_id(self, user_id):
+      result = db_session.query(Article).join(
+        Favorite,
+        Favorite.article_id == Article.id
+      ).filter(
+        Favorite.user_id == user_id
+      ).order_by(
+        Favorite.create_time.desc()
+      ).all()
+
+      return self.app_path(result)
+
+    # 获取所有用户评论过的文章
+    def get_feedback_article_by_user_id(self,user_id):
+      # 用子查询解决查询结果的问题 distinct去重
+      article_id_list = db_session.query(
+        distinct(Feedback.article_id)
+      ).filter_by(user_id=user_id).subquery()
+      # 再通过文章id的集合查询到所有文章数据
+      result = db_session.query(Article).filter(
+        Article.id.in_(article_id_list)
+      ).all()
+
+      return self.app_path(result)
+
+
+    # 添加文章中所有头部图片的路径
+    def app_path(self, article_list):
+      for article in article_list:
+        article.article_image = config[env].article_header_image_path + article.article_image
+
+      return article_list
