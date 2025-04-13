@@ -17,7 +17,9 @@ from model.feedback import Feedback
 from model.user import User
 
 article = Blueprint("article",__name__)
-
+label_types = config[env].label_types
+article_types = config[env].article_types
+article_tags = config[env].article_tags
 
 @article.route("/detail")
 def article_detail():
@@ -63,7 +65,7 @@ def get_article_request_param(request_data):
 
 @article.route("/article/new")
 def article_new():
-    return render_template("new-article.html")
+    return render_template("new-article.html",label_types=label_types,article_types=article_types)
 
 
 # 草稿或文章存储
